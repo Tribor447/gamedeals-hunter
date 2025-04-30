@@ -5,6 +5,7 @@ plugins {
 }
 
 android {
+
     namespace = "com.example.gamedealshunter"
     compileSdk = 35
 
@@ -49,7 +50,11 @@ android {
         htmlOutput   = file("$buildDir/reports/lint/lint.html")
 
         disable += "OldTargetApi"
+
+        baseline = file("lint-baseline.xml")
     }
+
+
 }
 
 dependencies {
