@@ -2,17 +2,17 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
-
-    namespace = "com.example.gamedealshunter"
-    compileSdk = 35
+    namespace = "com.example.test"
+    compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.gamedealshunter"
-        minSdk = 21
-        targetSdk = 35
+        applicationId = "com.example.test"
+        minSdk = 24
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -38,34 +38,32 @@ android {
     buildFeatures {
         compose = true
     }
-
-    lint {
-        abortOnError     = true
-        warningsAsErrors = true
-        checkAllWarnings = true
-
-        xmlReport    = true
-        xmlOutput    = file("$buildDir/reports/lint/lint.xml")
-        htmlReport   = true
-        htmlOutput   = file("$buildDir/reports/lint/lint.html")
-
-        disable += "OldTargetApi"
-
-        baseline = file("lint-baseline.xml")
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.13"
     }
-
-
 }
 
 dependencies {
+    implementation(libs.retrofit.converter)
+    implementation(libs.navigation.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
+    implementation(libs.retrofit.converter.scalars)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.serialization)
+    implementation(libs.okhttp.logging)
+    implementation(libs.paging.runtime)
+    implementation(libs.paging.compose)
+    implementation(libs.coil.compose)
+    implementation(libs.koin.android)
+    implementation(libs.koin.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
