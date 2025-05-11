@@ -17,8 +17,18 @@ coil = "2.5.0"
 koin = "3.5.3"
 retrofit-serialization="0.8.0"
 navigationCompose     = "2.7.5"
+koinWork       = "3.5.3"
+room           = "2.6.1"
+work           = "2.9.0"
+datastore      = "1.0.0"
 
 [libraries]
+room-runtime      = { group = "androidx.room", name = "room-runtime",  version.ref = "room" }
+room-ktx          = { group = "androidx.room", name = "room-ktx",      version.ref = "room" }
+room-compiler     = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+work-runtime      = { group = "androidx.work",  name = "work-runtime-ktx", version.ref = "work" }
+koin-workmanager  = { group = "io.insert-koin", name = "koin-androidx-workmanager", version.ref = "koinWork" }
+datastore         = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

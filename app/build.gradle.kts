@@ -1,4 +1,5 @@
 plugins {
+    id("kotlin-kapt")
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
@@ -6,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.test"
+    namespace = "com.example.gamedealshunter"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.test"
+        applicationId = "com.example.gamedealshunter"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -44,6 +45,12 @@ android {
 }
 
 dependencies {
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
+    implementation(libs.datastore)
+    implementation(libs.work.runtime)
+    implementation(libs.koin.workmanager)
     implementation(libs.retrofit.converter)
     implementation(libs.navigation.compose)
     implementation(libs.androidx.core.ktx)
