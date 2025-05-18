@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     kapt(libs.room.compiler)
+    implementation(libs.compose.material.icons.extended)
     implementation(libs.datastore)
     implementation(libs.work.runtime)
     implementation(libs.koin.workmanager)

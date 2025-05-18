@@ -18,8 +18,23 @@ class DealsRepository(
             config = PagingConfig(pageSize = 60, enablePlaceholders = false),
             pagingSourceFactory = { DealsPagingSource(api, storeId) }
         ).flow
-    suspend fun addToFav(dto: DealDto) =
-        dao.add(FavoriteEntity(dto.id, dto.title, dto.thumb, dto.salePrice))
+    suspend fun addToFav(dto: DealDto) {
+        val entity = dao.find(dto.id)
+        if (entity == null) {
+            dao.add(
+                FavoriteEntity(
+                    dealId       = dto.id,
+                    title        = dto.title,
+                    thumb        = dto.thumb,
+                    currentPrice = dto.salePrice,
+                    normalPrice  = dto.normalPrice,
+                    storeId      = dto.storeId
+                )
+            )
+        } else {
+            dao.remove(dto.id)
+        }
+    }
 
     suspend fun removeFav(id: String) = dao.remove(id)
 

@@ -1,8 +1,5 @@
 package com.example.gamedealshunter.data.worker
 
-import android.Manifest
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -15,8 +12,7 @@ import com.example.gamedealshunter.data.local.FavoritesDao
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
-import androidx.annotation.RequiresPermission
+
 
 class PriceCheckWorker(
     ctx: Context,

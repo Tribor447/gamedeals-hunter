@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.gamedealshunter.ui.deals.DealsScreen
 import com.example.gamedealshunter.ui.settings.SettingsScreen
+import com.example.gamedealshunter.ui.fav.FavoritesScreen
 
 
 @Composable
@@ -19,5 +20,6 @@ fun AppNavGraph(
     ) {
         composable("deals")    { DealsScreen(navController) }
         composable("settings") { SettingsScreen(navController) }
+        composable("favorites")  { FavoritesScreen(navController) }
     }
 }
