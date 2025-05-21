@@ -1,24 +1,23 @@
 package com.example.gamedealshunter.ui.deals
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.gamedealshunter.data.local.FavoriteEntity
-import com.example.gamedealshunter.data.network.dto.DealDto
 import com.example.gamedealshunter.ui.deals.components.DealCard
 import kotlinx.coroutines.flow.map
 import org.koin.androidx.compose.koinViewModel
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Tune
 
 
 
@@ -30,74 +29,121 @@ fun DealsScreen(
 ) {
 
 
-
-    val pagingItems: LazyPagingItems<DealDto> =
-        viewModel.deals.collectAsLazyPagingItems()
-
-
-    val favIds by viewModel.favorites
-        .map { list -> list.map(FavoriteEntity::dealId).toSet() }
-        .collectAsState(initial = emptySet())
+    val showPrice by viewModel.showPriceFilter.collectAsState()
+    val sortOrder by viewModel.sort.collectAsState()
 
 
-    val snackHost = remember { SnackbarHostState() }
-
-
+    var sortMenu by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Game Deals") },
+                title = {
+                    TextField(
+                        value = viewModel.query.collectAsState().value,
+                        onValueChange = viewModel::onQueryChange,
+                        singleLine = true,
+                        placeholder = { Text("Поиск…") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = null
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                },
                 actions = {
-                    IconButton(onClick = { navController.navigate("settings") }) {
-                        Icon(Icons.Default.Settings, contentDescription = "Settings")
+                    IconButton({ sortMenu = true }) {
+                        Icon(Icons.Default.Tune, "Сортировка/фильтр")
+                    }
+                    DropdownMenu(
+                        expanded = sortMenu,
+                        onDismissRequest = { sortMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Цена ↑") },
+                            onClick = {
+                                viewModel.onSortChange(SortOrder.ASC)
+                                sortMenu = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Цена ↓") },
+                            onClick = {
+                                viewModel.onSortChange(SortOrder.DESC)
+                                sortMenu = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(if (showPrice) "Скрыть фильтр" else "Показать фильтр по цене") },
+                            onClick = {
+                                viewModel.togglePriceFilter()
+                                sortMenu = false
+                            }
+                        )
+                    }
+
+                    IconButton({ navController.navigate("favorites") }) {
+                        Icon(Icons.Default.Favorite, "Избранное")
+                    }
+                    IconButton({ navController.navigate("settings") }) {
+                        Icon(Icons.Default.Settings, "Настройки")
                     }
                 }
             )
         },
-        snackbarHost = { SnackbarHost(snackHost) }
+        snackbarHost = { SnackbarHost(remember { SnackbarHostState() }) }
     ) { innerPadding: PaddingValues ->
 
-
-        LazyColumn(
+        val range by viewModel.range.collectAsState()
+        val pagingItems = viewModel.deals.collectAsLazyPagingItems()
+        val favIds by viewModel.favorites
+            .map { it.map { f -> f.dealId } }
+            .collectAsState(initial = emptyList())
+        Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize(),
-            contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .fillMaxSize()
         ) {
 
-
-            items(count = pagingItems.itemCount) { index ->
-                pagingItems[index]?.let { deal ->
-                    DealCard(
-                        deal        = deal,
-                        isFavorite  = favIds.contains(deal.id),
-                        onFavClick  = viewModel::toggleFav
+            AnimatedVisibility(visible = showPrice) {
+                Column {
+                    RangeSlider(
+                        value = range,
+                        onValueChange = viewModel::onRangeChange,
+                        valueRange = 0f..100f,
+                        steps = 19,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                    Text(
+                        text = "от $${range.start.toInt()}  до $${range.endInclusive.toInt()}",
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
                     )
                 }
             }
 
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
 
-            item {
-                if (pagingItems.loadState.append is LoadState.Loading) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        contentAlignment = Alignment.Center
-                    ) { CircularProgressIndicator() }
+
+                val snapshot = pagingItems.itemSnapshotList.items
+                val sorted = when (sortOrder) {
+                    SortOrder.ASC -> snapshot.sortedBy { it.salePrice.toFloat() }
+                    SortOrder.DESC -> snapshot.sortedByDescending { it.salePrice.toFloat() }
                 }
-            }
-        }
 
-
-        val refreshError = pagingItems.loadState.refresh as? LoadState.Error
-        LaunchedEffect(refreshError) {
-            refreshError?.let {
-                snackHost.showSnackbar(
-                    it.error.localizedMessage ?: "Network error"
-                )
+                itemsIndexed(sorted, key = { _, d -> d.id }) { _, deal ->
+                    DealCard(
+                        deal = deal,
+                        isFavorite = favIds.contains(deal.id),
+                        onFavClick = viewModel::toggleFav
+                    )
+                }
             }
         }
     }

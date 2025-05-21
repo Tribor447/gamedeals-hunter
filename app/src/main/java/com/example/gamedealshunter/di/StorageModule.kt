@@ -8,7 +8,7 @@ val storageModule = module {
 
 
     single {
-        Room.databaseBuilder(get(), AppDatabase::class.java, "game_deals.db").build()
+        Room.databaseBuilder(get(), AppDatabase::class.java, "game_deals.db").fallbackToDestructiveMigration().build()
     }
     single { get<AppDatabase>().favoritesDao() }
 
