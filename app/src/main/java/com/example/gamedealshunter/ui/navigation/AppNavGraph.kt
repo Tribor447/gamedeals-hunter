@@ -8,7 +8,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.gamedealshunter.ui.deals.DealsScreen
 import com.example.gamedealshunter.ui.settings.SettingsScreen
 import com.example.gamedealshunter.ui.fav.FavoritesScreen
-
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import com.example.gamedealshunter.ui.detail.DealDetailScreen
 
 @Composable
 fun AppNavGraph(
@@ -21,5 +23,10 @@ fun AppNavGraph(
         composable("deals")    { DealsScreen(navController) }
         composable("settings") { SettingsScreen(navController) }
         composable("favorites")  { FavoritesScreen(navController) }
+
+        composable(
+            route = "deal/{dealId}",
+            arguments = listOf(navArgument("dealId") { type = NavType.StringType })
+        ) { DealDetailScreen(navController) }
     }
 }

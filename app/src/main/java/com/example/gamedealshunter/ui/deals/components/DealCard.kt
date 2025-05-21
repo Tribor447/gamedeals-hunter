@@ -20,6 +20,13 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.gamedealshunter.data.network.dto.DealDto
 import com.example.gamedealshunter.util.StoreNames
+import androidx.compose.foundation.clickable
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.surfaceColorAtElevation
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import coil.request.ImageRequest
 
 import kotlin.math.roundToInt
 import java.text.DecimalFormat
@@ -31,6 +38,7 @@ fun DealCard(
     deal: DealDto,
     isFavorite: Boolean,
     onFavClick: (DealDto) -> Unit,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val discount = remember(deal) {
@@ -38,63 +46,89 @@ fun DealCard(
     }
     val store = remember(deal.storeId) { StoreNames[deal.storeId] }
 
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
-    ) {
-        Row(Modifier.padding(12.dp)) {
+    val ctx = LocalContext.current
 
+    val imgUrl = remember(deal.thumb) {
+        deal.thumb.replace("capsule_sm_120", "capsule_616x353")
+    }
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp)
+        ),
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.cardElevation(6.dp)
+    ) {
+        Column(Modifier.padding(12.dp)) {
 
             AsyncImage(
-                model = deal.thumb,
+                model = ImageRequest.Builder(ctx)
+                    .data(imgUrl)
+                    .crossfade(true)
+                    .build(),
                 contentDescription = deal.title,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(80.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .fillMaxWidth()
+                    .aspectRatio(16f / 9f)
+                    .clip(MaterialTheme.shapes.small)
             )
 
-            Spacer(Modifier.width(12.dp))
+            Spacer(Modifier.height(12.dp))
 
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(deal.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.weight(1f))
 
-            Column(
-                Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically)
-            ) {
-                Text(deal.title, style = MaterialTheme.typography.titleMedium)
-
-                Spacer(Modifier.height(4.dp))
-
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("$${priceFormat.format(deal.salePrice)}",
-                        style = MaterialTheme.typography.titleLarge)
-
-                    Spacer(Modifier.width(8.dp))
-
-                    Text("$${priceFormat.format(deal.normalPrice)}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = .6f))
+                // Кнопка избранного
+                IconButton(onClick = { onFavClick(deal) }) {
+                    val icon =
+                        if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder
+                    Icon(icon, null, tint = MaterialTheme.colorScheme.primary)
                 }
+            }
 
-                Spacer(Modifier.height(4.dp))
+            Spacer(Modifier.height(6.dp))
 
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    "$${priceFormat.format(deal.salePrice)}",
+                    style = MaterialTheme.typography.titleLarge
+                )
+
+                Spacer(Modifier.width(8.dp))
 
                 Text(
-                    text = "$store · -$discount%",
+                    "$${priceFormat.format(deal.normalPrice)}",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = .6f)
+                )
+
+                Spacer(Modifier.width(8.dp))
+
+                AssistChip(
+                    onClick = {},
+                    label = {
+                        Text("-$discount%")
+                    },
+                    colors = AssistChipDefaults.assistChipColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        labelColor     = MaterialTheme.colorScheme.onSecondary
+                    ),
+                    border = null
                 )
             }
 
-
-            IconButton(onClick = { onFavClick(deal) }) {
-                val icon = if (isFavorite) Icons.Filled.Favorite
-                else Icons.Outlined.FavoriteBorder
-                Icon(icon, contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary)
-            }
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = store,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.primary
+            )
         }
     }
 }
