@@ -6,7 +6,7 @@ import androidx.paging.PagingData
 import com.example.gamedealshunter.data.local.FavoriteEntity
 import com.example.gamedealshunter.data.local.FavoritesDao
 import com.example.gamedealshunter.data.network.CheapSharkApi
-import com.example.gamedealshunter.data.network.dto.DealDto
+import com.example.gamedealshunter.data.network.dto.*
 import kotlinx.coroutines.flow.Flow
 
 class DealsRepository(
@@ -39,4 +39,8 @@ class DealsRepository(
     suspend fun removeFav(id: String) = dao.remove(id)
 
     fun observeFavorites(): Flow<List<FavoriteEntity>> = dao.all()
+
+    suspend fun getDealDetail(id: String): DealDetailDto = api.getDealDetail(id)
+    suspend fun getDealsForGame(steamAppId: Int): List<DealDto> =
+        api.getDealsBySteamApp(steamAppId)
 }
