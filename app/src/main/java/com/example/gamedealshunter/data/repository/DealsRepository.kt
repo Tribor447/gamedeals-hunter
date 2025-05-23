@@ -13,10 +13,13 @@ class DealsRepository(
     private val api: CheapSharkApi,
     private val dao: FavoritesDao
 ) {
-    fun getDealsPager(storeId: Int? = null): Flow<PagingData<DealDto>> =
+    fun getDealsPager(
+        storeId: Int? = null,
+        title: String?   = null
+        ): Flow<PagingData<DealDto>> =
         Pager(
             config = PagingConfig(pageSize = 60, enablePlaceholders = false),
-            pagingSourceFactory = { DealsPagingSource(api, storeId) }
+            pagingSourceFactory = { DealsPagingSource(api, storeId, title) }
         ).flow
     suspend fun addToFav(dto: DealDto) {
         val entity = dao.find(dto.id)

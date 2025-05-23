@@ -9,7 +9,8 @@ interface CheapSharkApi {
     suspend fun getDeals(
         @Query("pageNumber") page: Int = 0,
         @Query("pageSize") pageSize: Int = 60,
-        @Query("storeID") storeId: Int? = null
+        @Query("storeID") storeId: Int? = null,
+        @Query("title")   title: String? = null
     ): List<DealDto>
 
     @GET("deals")

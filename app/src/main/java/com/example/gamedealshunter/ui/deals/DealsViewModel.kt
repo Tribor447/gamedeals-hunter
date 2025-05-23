@@ -44,30 +44,29 @@ class DealsViewModel(
     val    range : StateFlow<ClosedFloatingPointRange<Float>> = _range
     fun onRangeChange(r: ClosedFloatingPointRange<Float>) { _range.value = r }
 
-
-    private val basePager =
-        repo.getDealsPager().cachedIn(viewModelScope)
-
-
     val deals: Flow<PagingData<DealDto>> =
         combine(_query, _range, _sort) { q, priceRange, sort ->
-            Triple(q.lowercase(), priceRange, sort)
-        }.flatMapLatest { (q, priceRange, sort) ->
-            basePager
-                .map { pd ->
-
-                    val filtered = pd.filter { dto ->
-                        dto.title.lowercase().contains(q) &&
-                                dto.salePrice.toFloat() in priceRange
-                    }
-
-                    when (sort) {
-                        SortOrder.ASC  -> filtered
-                        SortOrder.DESC -> filtered.map { it }
-                            .also {  }
-                    }
-                }
+            Triple(q.trim().takeIf { it.isNotBlank() }, priceRange, sort)
         }
+            .flatMapLatest { (q, priceRange, sort) ->
+                repo.getDealsPager(storeId = null, title = q)
+                    .cachedIn(viewModelScope)
+                    .map { pagingData ->
+                        pagingData.filter { dto ->
+                            dto.salePrice.toFloat() in priceRange
+                        }.let { pd ->
+                            when (sort) {
+                                SortOrder.ASC  -> pd
+                                SortOrder.DESC -> pd.map { it }
+                                    .apply { }
+                            }
+                        }
+                    }
+            }
+
+
+
+
     val favorites = repo.observeFavorites()
         .stateIn(viewModelScope,
             started     = SharingStarted.Eagerly,
