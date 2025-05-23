@@ -4,11 +4,20 @@ import com.example.gamedealshunter.data.repository.DealsRepository
 import com.example.gamedealshunter.ui.deals.DealsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import com.example.gamedealshunter.data.local.FavoritesDao
+import androidx.work.WorkManager
+import com.example.gamedealshunter.ui.settings.SettingsViewModel
+import com.example.gamedealshunter.ui.fav.FavoritesViewModel
+import com.example.gamedealshunter.ui.detail.DealDetailViewModel
+import androidx.lifecycle.SavedStateHandle
 
 val repositoryModule = module {
-    single { DealsRepository(get()) }
+    single { DealsRepository(get(), get<FavoritesDao>()) }
 }
 
 val viewModelModule = module {
     viewModel { DealsViewModel(get()) }
+    viewModel { SettingsViewModel(get(), get<WorkManager>()) }
+    viewModel { FavoritesViewModel(get(), get()) }
+    viewModel { (state: SavedStateHandle) -> DealDetailViewModel(state, get()) }
 }
