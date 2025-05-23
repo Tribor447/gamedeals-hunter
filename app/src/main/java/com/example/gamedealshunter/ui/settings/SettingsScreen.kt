@@ -17,7 +17,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.ExistingWorkPolicy
+import androidx.work.WorkManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 
 
@@ -27,6 +30,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.TopAppBar
+import com.example.gamedealshunter.data.worker.PriceCheckWorker
 import kotlinx.coroutines.launch
 
 
@@ -48,6 +52,7 @@ fun SettingsScreen(
     val focus = LocalFocusManager.current
     val snack = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val ctx = LocalContext.current
 
     Scaffold(
 
@@ -104,6 +109,25 @@ fun SettingsScreen(
                 },
                 modifier = Modifier.fillMaxWidth()
             ) { Text("Сохранить") }
+            Spacer(Modifier.height(16.dp))
+            Button(
+                onClick = {
+                    val request = OneTimeWorkRequestBuilder<PriceCheckWorker>()
+                        .build()
+                    WorkManager.getInstance(ctx)
+                        .enqueueUniqueWork(
+                            "price-check-now",
+                            ExistingWorkPolicy.REPLACE,
+                            request
+                        )
+                    scope.launch {
+                        snack.showSnackbar("Запрос на проверку отправлен")
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Проверить цены сейчас")
+            }
         }
     }
 }

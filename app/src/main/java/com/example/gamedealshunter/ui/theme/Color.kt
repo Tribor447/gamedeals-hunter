@@ -14,3 +14,6 @@ val EmeraldDark = Color(0xFF66BB6A)
 val SkyDark     = Color(0xFF4FC3F7)
 val InkLight    = Color(0xFFF5F5F5)
 val Graphite    = Color(0xFF1B1B1B)
+val Black             = Color(0xFF000000)
+
+val CardDarkGrayPurple = Color(0xFF1F1B24)
