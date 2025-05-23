@@ -12,8 +12,6 @@ import com.example.gamedealshunter.data.local.FavoritesDao
 import com.example.gamedealshunter.data.network.CheapSharkApi
 import com.example.gamedealshunter.data.network.dto.DealDto
 import com.example.gamedealshunter.data.prefs.SettingsRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.*
@@ -26,7 +24,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowNotificationManager
 import androidx.room.Room
 import com.example.gamedealshunter.data.network.dto.DealDetailDto
-import com.example.gamedealshunter.ui.settings.SettingsScreen
 import org.robolectric.Shadows.shadowOf
 
 import org.junit.runner.RunWith

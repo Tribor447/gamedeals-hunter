@@ -1,7 +1,6 @@
 package com.example.gamedealshunter.ui.deals.components
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
@@ -23,7 +22,6 @@ import com.example.gamedealshunter.util.StoreNames
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil.request.ImageRequest
