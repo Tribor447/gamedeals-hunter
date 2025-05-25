@@ -7,13 +7,19 @@ import com.example.gamedealshunter.data.network.dto.DealDto
 
 class DealsPagingSource(
     private val api: CheapSharkApi,
-    private val storeId: Int? = null
+    private val storeId: Int? = null,
+    private val query: String? = null
 ) : PagingSource<Int, DealDto>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DealDto> {
         val page = params.key ?: 0
         return try {
-            val deals = api.getDeals(page = page, pageSize = params.loadSize, storeId = storeId)
+            val deals = api.getDeals(
+                page = page,
+                pageSize = params.loadSize,
+                storeId = storeId,
+                title = query
+            )
             LoadResult.Page(
                 data = deals,
                 prevKey = if (page == 0) null else page - 1,

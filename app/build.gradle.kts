@@ -1,4 +1,5 @@
 plugins {
+    id("kotlin-kapt")
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
@@ -6,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.test"
+    namespace = "com.example.gamedealshunter"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.test"
+        applicationId = "com.example.gamedealshunter"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -44,6 +45,14 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.compose.ui.text.google.fonts)
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
+    implementation(libs.compose.material.icons.extended)
+    implementation(libs.datastore)
+    implementation(libs.work.runtime)
+    implementation(libs.koin.workmanager)
     implementation(libs.retrofit.converter)
     implementation(libs.navigation.compose)
     implementation(libs.androidx.core.ktx)
@@ -65,6 +74,10 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
     testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.work.testing)
+    testImplementation(libs.test.core)
+    testImplementation(libs.room.testing)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
