@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.gamedealshunter.ui.deals.components.DealCard
-import kotlinx.coroutines.flow.map
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,6 +25,8 @@ fun DealsScreen(
     val showPrice by viewModel.showPriceFilter.collectAsState()
     val sortOrder by viewModel.sort.collectAsState()
     var sortMenu by remember { mutableStateOf(false) }
+    val range by viewModel.range.collectAsState()
+    val favIds by viewModel.favoriteIds.collectAsState()
 
     Scaffold(
         topBar = {
@@ -79,11 +80,8 @@ fun DealsScreen(
         snackbarHost = { SnackbarHost(remember { SnackbarHostState() }) }
     ) { innerPadding ->
 
-        val range by viewModel.range.collectAsState()
+
         val pagingItems = viewModel.deals.collectAsLazyPagingItems()
-        val favIds by viewModel.favorites
-            .map { it.map { f -> f.dealId } }
-            .collectAsState(initial = emptyList())
 
         Column(
             modifier = Modifier

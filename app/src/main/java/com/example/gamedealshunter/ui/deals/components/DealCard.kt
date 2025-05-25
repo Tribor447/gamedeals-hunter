@@ -33,11 +33,12 @@ private val priceFormat = DecimalFormat("#0.00")
 
 @Composable
 fun DealCard(
+    modifier: Modifier = Modifier,
     deal: DealDto,
     isFavorite: Boolean,
     onFavClick: (DealDto) -> Unit,
-    onClick: () -> Unit = {},
-    modifier: Modifier = Modifier
+    onClick: () -> Unit = {}
+
 ) {
     val discount = remember(deal) {
         ((1 - deal.salePrice / deal.normalPrice) * 100).roundToInt()

@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gamedealshunter.ui.theme.GameDealsHunterTheme
 import com.example.gamedealshunter.ui.navigation.AppNavGraph
+import com.example.gamedealshunter.ui.settings.RequestNotificationPermission
 
 
 class MainActivity : ComponentActivity() {
@@ -19,6 +20,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             GameDealsHunterTheme(dynamicColor = false) {
+                RequestNotificationPermission()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color    = MaterialTheme.colorScheme.background

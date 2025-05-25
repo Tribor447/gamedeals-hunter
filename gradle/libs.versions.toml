@@ -22,7 +22,7 @@ koinWork       = "3.5.3"
 room           = "2.6.1"
 work           = "2.9.0"
 datastore      = "1.0.0"
-
+googleFonts = "1.8.2"
 robolectric = "4.10"
 workTesting = "2.9.0"
 testCore = "1.5.0"
@@ -56,7 +56,7 @@ retrofit-converter-scalars   = { group = "com.squareup.retrofit2", name = "conve
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 navigation-compose    = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
-
+androidx-compose-ui-text-google-fonts = { group = "androidx.compose.ui", name  = "ui-text-google-fonts", version.ref = "googleFonts" }
 paging-runtime     = { group = "androidx.paging", name = "paging-runtime",  version.ref = "pagingRuntime" }
 paging-compose     = { group = "androidx.paging", name = "paging-compose", version.ref = "pagingCompose" }
 

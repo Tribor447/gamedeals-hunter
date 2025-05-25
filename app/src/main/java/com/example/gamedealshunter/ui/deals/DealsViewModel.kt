@@ -72,6 +72,11 @@ class DealsViewModel(
             started     = SharingStarted.Eagerly,
             initialValue = emptyList())
 
+    val favoriteIds: StateFlow<List<String>> =
+        favorites
+            .map { list -> list.map { it.dealId } }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
 
     fun toggleFav(deal: DealDto) = viewModelScope.launch {
         val exists = favorites.value.any { it.dealId == deal.id }

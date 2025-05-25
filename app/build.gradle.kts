@@ -45,7 +45,7 @@ android {
 }
 
 dependencies {
-    implementation("androidx.compose.ui:ui-text-google-fonts:1.8.2")
+    implementation(libs.androidx.compose.ui.text.google.fonts)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     kapt(libs.room.compiler)
